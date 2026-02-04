@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-0">👥 Clientes</h1>
+        <a href="{% url 'crear_cliente' %}" class="btn btn-primary">Agregar nuevo cliente</a>
+    </div>
+
+    {% if pagina_actual.object_list %}
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in pagina_actual.object_list %}
+            <tr>
+                <td>{{ cliente.nombre }}</td>
+                <td>{{ cliente.apellido }}</td>
+                <td>{{ cliente.email }}</td>
+                <td>{{ cliente.telefono }}</td>
+                <td>
+                    <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-sm btn-warning me-2">Editar</a>
+                    <a href="{% url 'eliminar_cliente' cliente.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="alert alert-info">No hay clientes registrados.</div>
+    {% endif %}
+
+    <div class="mt-4 d-flex justify-content-between align-items-center">
+        <!-- Paginador centrado (con flex-grow para que ocupe todo el espacio disponible y el contenido quede centrado) -->
+        <div style="flex-grow:1; display:flex; justify-content:center; align-items:center; gap:1rem;">
+            {% if pagina_actual.has_previous %}
+                <a href="?page={{ pagina_actual.previous_page_number }}" class="btn btn-primary">Anterior</a>
+            {% endif %}
+
+            <span>Página {{ pagina_actual.number }} de {{ pagina_actual.paginator.num_pages }}</span>
+
+            {% if pagina_actual.has_next %}
+                <a href="?page={{ pagina_actual.next_page_number }}" class="btn btn-primary">Siguiente</a>
+            {% endif %}
+        </div>
+
+        <!-- Botón a la derecha -->
+        <a href="{% url 'clientes_inactivos' %}" class="btn btn-secondary rounded-pill px-4 shadow-sm">
+            Clientes inactivos
+        </a>
+    </div>
+   
+</div>
+{% endblock %}

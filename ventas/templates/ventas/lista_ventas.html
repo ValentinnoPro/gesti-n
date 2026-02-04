@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4" style="max-width: 900px; margin-left:auto; margin-right:auto;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-0">Ventas</h1>
+        <a href="{% url 'crear_venta' %}" class="btn btn-primary">Registrar nueva venta</a>
+    </div>
+
+    {% if pagina_actual %}
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Detalles</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venta in pagina_actual %}
+                    <tr>
+                        <td>{{ venta.cliente.nombre }} {{ venta.cliente.apellido }}</td>
+                        <td>{{ venta.fecha }}</td>
+                        <td>
+                            <ul class="mb-0">
+                                {% for detalle in venta.detallesventa_set.all %}
+                                    <li>
+                                        {{ detalle.cantidad }} x {{ detalle.producto.nombre }} 
+                                        ${{ detalle.precio_unitario }} c/u = 
+                                        ${{ detalle.subtotal }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>${{ venta.calcular_total }}</td>
+                        <td>
+                            <a href="{% url 'editar_venta' venta.id %}" class="btn btn-sm btn-warning me-2">Editar</a>
+                            <a href="{% url 'eliminar_venta' venta.id %}" class="btn btn-sm btn-danger">Anular</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">No hay ventas registradas.</div>
+    {% endif %}
+
+    <div class="mt-4 d-flex justify-content-between align-items-center">
+       
+        <div style="flex-grow:1; display:flex; justify-content:center; align-items:center; gap:1rem;">
+            {% if pagina_actual.has_previous %}
+                <a href="?page={{ pagina_actual.previous_page_number }}" class="btn btn-primary">Anterior</a>
+            {% endif %}
+
+            <span>Página {{ pagina_actual.number }} de {{ pagina_actual.paginator.num_pages }}</span>
+
+            {% if pagina_actual.has_next %}
+                <a href="?page={{ pagina_actual.next_page_number }}" class="btn btn-primary">Siguiente</a>
+            {% endif %}
+        </div>
+
+       
+        <a href="{% url 'ventas_anuladas' %}" class="btn btn-secondary rounded-pill px-4 shadow-sm">
+            Ventas Anuladas
+        </a>
+    </div>
+
+</div>
+{% endblock %}

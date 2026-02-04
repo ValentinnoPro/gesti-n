@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-center mt-4">
+    <div class="card shadow-sm border-danger" style="max-width: 600px; width: 100%;">
+        <div class="card-body text-center">
+            <h3 class="card-title text-danger">🛑 Eliminar Producto</h3>
+            
+            {% if se_vendio %}
+                <p class="card-text">
+                Este Producto está registrado en una venta.<br>
+                ¿Estás seguro de que deseas marcar el <strong>{{ producto.nombre }}</strong> como <strong>inactivo</strong>?
+                </p>
+            {% else %}
+                <p class="card-text">
+                ¿Estás seguro de que deseas eliminar el prodcuto <strong>{{ producto.nombre }}</strong>?
+                </p>
+            {% endif %}
+            
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'lista_productos' %}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+                <form method="post" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                    Confirmar
+                    </button>
+                </form>
+            </div>
+        </div>
+            
+    </div>
+</div>
+{% endblock %}
